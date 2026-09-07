@@ -21,6 +21,8 @@ static CFStringRef const CSLSlotIconNamesKey = CFSTR("SlotIconNames");
 static CFStringRef const CSLLegacyShortcutIDsKey = CFSTR("PopupShortcutIDs");
 static CFStringRef const CSLShortcutsCatalogKey = CFSTR("ShortcutsCatalog");
 static CFStringRef const CSLModuleGlyphPathsKey = CFSTR("ModuleGlyphPaths");
+static CFStringRef const CSLHapticFeedbackKey = CFSTR("HapticFeedback");
+static CFStringRef const CSLHapticStyleKey = CFSTR("HapticStyle");
 
 /// Handled by CCSupport in SpringBoard: reloads providers and refreshes the
 /// metadata of every module.
@@ -86,6 +88,33 @@ static NSArray<NSString *> *CSLNormalizedIdentifiers(id _Nullable value) {
         [identifiers addObject:identifier];
     }
     return identifiers;
+}
+
+NSString *const CSLHapticStyleLight = @"light";
+NSString *const CSLHapticStyleMedium = @"medium";
+NSString *const CSLHapticStyleHeavy = @"heavy";
+
+BOOL CSLHapticFeedbackEnabled(void) {
+    id value = CSLPreferenceValue(CSLHapticFeedbackKey);
+    // On by default: a tap that does nothing visible until the Shortcut runs is
+    // exactly the case that wants confirmation, and one switch turns it off.
+    return [value isKindOfClass:[NSNumber class]] ? [(NSNumber *)value boolValue] : YES;
+}
+
+NSString *CSLHapticStyle(void) {
+    id value = CSLPreferenceValue(CSLHapticStyleKey);
+    if (![value isKindOfClass:[NSString class]]) {
+        return CSLHapticStyleMedium;
+    }
+
+    NSString *style = (NSString *)value;
+    if ([style isEqualToString:CSLHapticStyleLight] ||
+        [style isEqualToString:CSLHapticStyleHeavy]) {
+        return style;
+    }
+    // Anything else, including a value left behind by a future version, reads as
+    // the default rather than as no feedback at all.
+    return CSLHapticStyleMedium;
 }
 
 NSUInteger CSLModuleSlotCount(void) {

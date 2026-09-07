@@ -1,4 +1,4 @@
-# CCShortcutLauncher 1.5.1
+# CCShortcutLauncher 1.6.0
 
 Control Center module cho iOS 16 và iOS 17 (rootless). Settings tải thủ công danh
 mục My Shortcuts; mỗi module giữ danh sách Shortcut riêng. Tap module có nhiều
@@ -16,7 +16,7 @@ https://dinhno12313.github.io/
 [Add to Sileo](sileo://source/https://dinhno12313.github.io/)
 
 Package release trực tiếp cũng có tại
-[GitHub Releases](https://github.com/dinhno12313/CCShortcutLauncher/releases/tag/v1.5.1).
+[GitHub Releases](https://github.com/dinhno12313/CCShortcutLauncher/releases/tag/v1.6.0).
 
 ## Chức năng
 
@@ -51,6 +51,10 @@ Package release trực tiếp cũng có tại
 - Chặn tap lặp trong khi workflow trước vẫn đang chạy.
 - Theo dõi workflow đến khi hoàn tất, kể cả Shortcut chạy lâu hơn 60 giây.
 - Không gọi `shortcuts://` và không fallback sang app Shortcuts.
+- Rung phản hồi ngay lúc tap module. Bật/tắt và chọn độ mạnh (Nhẹ / Vừa / Mạnh)
+  ở **Settings → CCShortcutLauncher → RUNG PHẢN HỒI**; mặc định bật, độ mạnh
+  Vừa. Rung phát đúng thời điểm chạm, trước cả khi Shortcut chạy hay popup mở,
+  vì Shortcut chạy nền không để lại dấu hiệu nào trên màn hình.
 
 ## Kiến trúc
 
@@ -97,7 +101,7 @@ make clean package FINALPACKAGE=1
 Chép package vào `/var/mobile/`, sau đó:
 
 ```sh
-sudo dpkg -i '/var/mobile/com.dinhnguyenx.ccshortcutlauncher_1.5.1_iphoneos-arm64.deb'
+sudo dpkg -i '/var/mobile/com.dinhnguyenx.ccshortcutlauncher_1.6.0_iphoneos-arm64.deb'
 sudo sbreload
 ```
 

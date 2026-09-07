@@ -14,8 +14,9 @@ static CFStringRef const CSLCatalogRequestedNotification =
     CFSTR("com.dinhnguyenx.ccshortcutlauncher/catalogRequested");
 static NSString *const CSLRepositoryURLString = @"https://dinhno12313.github.io";
 static NSString *const CSLRepositorySpecifierIdentifier = @"RepositoryLink";
+static NSString *const CSLModuleCountSpecifierIdentifier = @"ModuleCount";
 static NSString *const CSLSettingsVersionText =
-    @"CCShortcutLauncher 1.5.1";
+    @"CCShortcutLauncher 1.6.0";
 
 /// The polling path synchronizes the domain once, then reads all related keys
 /// from the same snapshot instead of forcing a disk synchronization per key.
@@ -124,8 +125,24 @@ static UIImage *CSLRepositoryIcon(void) {
                 @"Dùng − và + để chọn số mô-đun. Mở một mô-đun bên dưới để thêm phím tắt, đổi thứ tự hoặc đổi tên. Sau đó thêm mô-đun trong Cài đặt → Trung tâm điều khiển.",
                 @"Use − and + to choose how many controls you want. Open a module below to add Shortcuts, change their order, or rename it. Then add the module in Settings → Control Center."
             ) forKey:@"footerText"];
-        } else if ([identifier isEqualToString:@"ModuleCount"]) {
+        } else if ([identifier isEqualToString:CSLModuleCountSpecifierIdentifier]) {
             specifier.name = CSLLocalizedText(@"Số mô-đun", @"Number of Modules");
+        } else if ([identifier isEqualToString:@"HapticsGroup"]) {
+            specifier.name = CSLLocalizedText(@"RUNG PHẢN HỒI", @"HAPTICS");
+            [specifier setProperty:CSLLocalizedText(
+                @"Rung ngay khi chạm mô-đun. Phím tắt chạy nền và không để lại dấu hiệu nào trên màn hình, nên rung thường là phản hồi duy nhất cho cú chạm.",
+                @"Vibrate the moment a module is tapped. A Shortcut runs in the background and leaves nothing on screen, so this is often the only answer the tap gets."
+            ) forKey:@"footerText"];
+        } else if ([identifier isEqualToString:@"HapticFeedback"]) {
+            specifier.name = CSLLocalizedText(@"Rung khi chạm", @"Vibrate on Tap");
+        } else if ([identifier isEqualToString:@"HapticStyle"]) {
+            specifier.name = CSLLocalizedText(@"Độ mạnh", @"Strength");
+            // The stored values stay English; only what the row shows changes.
+            [specifier setProperty:@[
+                CSLLocalizedText(@"Nhẹ", @"Light"),
+                CSLLocalizedText(@"Vừa", @"Medium"),
+                CSLLocalizedText(@"Mạnh", @"Heavy"),
+            ] forKey:@"validTitles"];
         }
     }
 }
@@ -138,6 +155,24 @@ static UIImage *CSLRepositoryIcon(void) {
         NSMutableArray *specifiers =
             [[self loadSpecifiersFromPlistName:@"Root" target:self] mutableCopy];
         [self localizeBaseSpecifiers:specifiers];
+
+        // Slot rows belong to the CONTROL CENTER MODULES group, so they go right
+        // after the row that decides how many of them there are — not at the end
+        // of the list. Appending worked only while that row happened to be last
+        // in the plist; a group added below it swallows them instead.
+        //
+        // Matched on the row's id rather than its key: the count row is a custom
+        // cell and carries no preference key at all.
+        NSUInteger insertionIndex = specifiers.count;
+        for (NSUInteger index = 0; index < specifiers.count; index++) {
+            PSSpecifier *candidate = specifiers[index];
+            NSString *identifier =
+                candidate.identifier ?: [candidate propertyForKey:@"id"];
+            if ([identifier isEqualToString:CSLModuleCountSpecifierIdentifier]) {
+                insertionIndex = index + 1;
+                break;
+            }
+        }
 
         NSUInteger slotCount = CSLModuleSlotCount();
         self.slotEntriesSnapshot =
@@ -154,7 +189,7 @@ static UIImage *CSLRepositoryIcon(void) {
             specifier->action = @selector(openModuleSlot:);
             [specifier setProperty:@(slot) forKey:CSLSlotSpecifierKey];
             [specifier setProperty:[self iconForSlot:slot] forKey:CSLSpecifierIconKey];
-            [specifiers addObject:specifier];
+            [specifiers insertObject:specifier atIndex:insertionIndex + slot];
         }
 
         PSSpecifier *respringGroup = [PSSpecifier emptyGroupSpecifier];

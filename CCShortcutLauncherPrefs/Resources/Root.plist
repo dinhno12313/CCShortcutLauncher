@@ -78,6 +78,58 @@
 			<key>label</key>
 			<string>Số mô-đun</string>
 		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>id</key>
+			<string>HapticsGroup</string>
+			<key>label</key>
+			<string>RUNG PHẢN HỒI</string>
+			<key>footerText</key>
+			<string>Rung ngay khi chạm mô-đun. Phím tắt chạy nền và không để lại dấu hiệu nào trên màn hình, nên rung thường là phản hồi duy nhất cho cú chạm.</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>id</key>
+			<string>HapticFeedback</string>
+			<key>label</key>
+			<string>Rung khi chạm</string>
+			<key>key</key>
+			<string>HapticFeedback</string>
+			<key>defaults</key>
+			<string>com.dinhnguyenx.ccshortcutlauncher</string>
+			<key>default</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>id</key>
+			<string>HapticStyle</string>
+			<key>label</key>
+			<string>Độ mạnh</string>
+			<key>key</key>
+			<string>HapticStyle</string>
+			<key>defaults</key>
+			<string>com.dinhnguyenx.ccshortcutlauncher</string>
+			<key>default</key>
+			<string>medium</string>
+			<key>detail</key>
+			<string>PSListItemsController</string>
+			<key>validValues</key>
+			<array>
+				<string>light</string>
+				<string>medium</string>
+				<string>heavy</string>
+			</array>
+			<key>validTitles</key>
+			<array>
+				<string>Nhẹ</string>
+				<string>Vừa</string>
+				<string>Mạnh</string>
+			</array>
+		</dict>
 	</array>
 	<key>title</key>
 	<string>CCShortcutLauncher</string>

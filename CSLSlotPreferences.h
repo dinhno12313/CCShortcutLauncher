@@ -19,6 +19,23 @@ NSString *CSLLocalizedText(NSString *vietnamese, NSString *english);
 NSUInteger CSLModuleSlotCount(void);
 void CSLSetModuleSlotCount(NSUInteger count);
 
+/// Tap feedback for a module press. Global, not per slot: it describes how the
+/// tweak feels, not what a particular module does.
+FOUNDATION_EXPORT NSString *const CSLHapticStyleLight;
+FOUNDATION_EXPORT NSString *const CSLHapticStyleMedium;
+FOUNDATION_EXPORT NSString *const CSLHapticStyleHeavy;
+
+/// Whether a module press vibrates. On by default.
+///
+/// Read only: both values are written by the Settings page straight into the
+/// domain through its `defaults` key. A setter here would be a second way to
+/// write the same key, and the two would drift.
+BOOL CSLHapticFeedbackEnabled(void);
+
+/// Strength of that vibration. Always one of the three constants above; an
+/// unknown stored value reads as medium rather than as silence.
+NSString *CSLHapticStyle(void);
+
 /// Control Center module identifier for a slot. Slot 0 keeps the pre-1.4
 /// identifier so an existing Control Center layout survives the update.
 NSString *CSLModuleIdentifierForSlot(NSUInteger slot);

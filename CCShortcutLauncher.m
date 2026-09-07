@@ -1,6 +1,7 @@
 #import "CCShortcutLauncher.h"
 #import "CCShortcutLauncherBackgroundRunner.h"
 #import "CSLDiagnostics.h"
+#import "CSLHaptics.h"
 #import "CSLModuleIcon.h"
 #import "CSLShortcutIcon.h"
 #import "CSLSlotPreferences.h"
@@ -120,6 +121,15 @@ static const CGFloat CSLModuleGlyphSide = 36.0;
     if (!selected) {
         return;
     }
+
+    // Fired here rather than inside the block below so the tap is answered on
+    // the press itself. What follows is either a Shortcut running in the
+    // background or a popup opening, and neither is instant; the feedback is
+    // the only thing that says the module registered the touch.
+    //
+    // It also fires for a slot holding nothing, because a tap that turns out to
+    // have nothing behind it is still a tap the user made.
+    CSLPlayModuleTapHaptic();
 
     dispatch_async(dispatch_get_main_queue(), ^{
         NSArray<NSDictionary<NSString *, id> *> *entries = [self slotEntries];
